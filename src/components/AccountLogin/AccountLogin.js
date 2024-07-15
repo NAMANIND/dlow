@@ -13,7 +13,7 @@ import { db } from "../../../firbase/clientApp";
 import { SignJWT } from "jose";
 import Cookies from "js-cookie";
 
-export default function AccountLogin() {
+export default function AccountLogin({ setIsLogin }) {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -121,10 +121,13 @@ export default function AccountLogin() {
           </Button>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Don't have an account?
-            <Link className="text-blue-600 underline" href="#">
-              Signup for free
-            </Link>
           </p>
+          <div
+            className="text-blue-600 underline cursor-pointer"
+            onClick={() => setIsLogin(false)}
+          >
+            Signup for free
+          </div>
         </div>
       </div>
     </form>

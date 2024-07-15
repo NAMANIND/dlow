@@ -1,4 +1,3 @@
-// AccountForm.js
 "use client";
 import React from "react";
 import { useState } from "react";
@@ -16,8 +15,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Sendemail from "@/app/email/page";
 
-export default function AccountForm() {
+export default function AccountForm({ setIsLogin }) {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -108,7 +108,16 @@ export default function AccountForm() {
       });
       console.log("Firestore document updated.");
 
+      // Send email
+      await Sendemail(
+        formData.email,
+        "Account Created",
+        `<p>Hello ${formData.firstName},</p><p>Your account has been successfully created.</p><p>Username: ${username}</p><p>Password: ${password}</p>`
+      );
+      console.log("Email sent.");
+
       alert("Account created successfully!");
+      setIsLogin(true);
     } catch (error) {
       console.error("Error creating account:", error);
       alert("Error creating account. Please try again.");
@@ -137,7 +146,7 @@ export default function AccountForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mx-auto max-w-md space-y-6">
+    <form onSubmit={handleSubmit} className="mx-auto py-10 max-w-md space-y-6">
       <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
           Create an Account
@@ -271,13 +280,12 @@ export default function AccountForm() {
               className="text-gray-700 dark:text-gray-300"
               htmlFor="aadhaarFront"
             >
-              Aadhaar (Front)
+              Aadhaar Front
             </Label>
             <Input
               accept="image/*"
               className="border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
               id="aadhaarFront"
-              required
               type="file"
               onChange={handleChange}
             />
@@ -287,13 +295,12 @@ export default function AccountForm() {
               className="text-gray-700 dark:text-gray-300"
               htmlFor="aadhaarBack"
             >
-              Aadhaar (Back)
+              Aadhaar Back
             </Label>
             <Input
               accept="image/*"
               className="border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
               id="aadhaarBack"
-              required
               type="file"
               onChange={handleChange}
             />
@@ -305,13 +312,12 @@ export default function AccountForm() {
               className="text-gray-700 dark:text-gray-300"
               htmlFor="panFront"
             >
-              PAN (Front)
+              PAN Front
             </Label>
             <Input
               accept="image/*"
               className="border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
               id="panFront"
-              required
               type="file"
               onChange={handleChange}
             />
@@ -321,13 +327,12 @@ export default function AccountForm() {
               className="text-gray-700 dark:text-gray-300"
               htmlFor="panBack"
             >
-              PAN (Back)
+              PAN Back
             </Label>
             <Input
               accept="image/*"
               className="border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
               id="panBack"
-              required
               type="file"
               onChange={handleChange}
             />
@@ -335,47 +340,31 @@ export default function AccountForm() {
         </div>
         <div className="space-y-2">
           <Label className="text-gray-700 dark:text-gray-300" htmlFor="address">
-            Address
+            Residential Address
           </Label>
           <Textarea
             className="border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
             id="address"
-            placeholder="Enter your address"
+            placeholder="1234 Main St, City, State, ZIP"
             required
             value={formData.address}
             onChange={handleChange}
           />
         </div>
-        <div className="flex items-start gap-2">
-          <Checkbox id="agree" required />
-          <Label
-            className="text-sm text-gray-700 dark:text-gray-300"
-            htmlFor="agree"
+      </div>
+      <Button type="submit" className="w-full">
+        Sign Up
+      </Button>
+      <div className="text-center">
+        <p className="text-gray-600 dark:text-gray-400">
+          Already have an account?{" "}
+          <Link
+            href="#"
+            className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
+            onClick={() => setIsLogin(true)}
           >
-            I agree to the
-            <Link
-              className="text-blue-600 underline dark:text-blue-400"
-              href="#"
-            >
-              Privacy Policy
-            </Link>
-            {" \n                  "}and
-            <Link
-              className="text-blue-600 underline dark:text-blue-400"
-              href="#"
-            >
-              Terms of Service
-            </Link>
-          </Label>
-        </div>
-        <Button
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600"
-          type="submit"
-        >
-          Create Account
-        </Button>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          Your login ID will be sent to the registered email after registration.
+            Sign In
+          </Link>
         </p>
       </div>
     </form>
