@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { useEffect } from "react";
 import {
   CaretSortIcon,
   CheckIcon,
@@ -51,13 +51,13 @@ export default function TeamSwitcher({ className, onTeamSelect }) {
   const [selectedTeam, setSelectedTeam] = React.useState(null);
   const [teams, setTeams] = React.useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedTeam) {
       localStorage.setItem("selectedTeam", selectedTeam.id);
     }
   }, [selectedTeam]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function fetchTeams() {
       const querySnapshot = await getDocs(collection(db, "users"));
       const teamsList = querySnapshot.docs.map((doc) => ({
