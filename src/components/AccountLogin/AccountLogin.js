@@ -120,7 +120,7 @@ export default function AccountLogin({ setIsLogin }) {
             ACCOUNT LOGIN
           </Button>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Don't have an account?
+            Don&apos;t have an account?
           </p>
           <div
             className="text-blue-600 underline cursor-pointer"
