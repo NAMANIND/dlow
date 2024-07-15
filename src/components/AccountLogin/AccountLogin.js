@@ -61,8 +61,6 @@ export default function AccountLogin({ setIsLogin }) {
         }`; // 10 years
 
         window.open("/dashboard", "_self");
-      } else {
-        throw new Error("Invalid username or password");
       }
     } catch (error) {
       console.error("Error logging in:", error);
