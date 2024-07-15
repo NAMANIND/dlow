@@ -3,9 +3,9 @@
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { Table } from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { DataTableViewOptions } from "@/components/Table/data-table-view-options";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { DataTableViewOptions } from "../../components/Table/data-table-view-options";
 import { statuses_trade } from "../data/data";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
