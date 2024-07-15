@@ -42,6 +42,8 @@ export default function AccountLogin({ setIsLogin }) {
           return data;
         });
 
+      alert(userData);
+
       if (userData && userData.password === password) {
         // Example secret key (replace with your generated key)
         const secretKey = "GENERATED_SECRET_KEY_HERE";
