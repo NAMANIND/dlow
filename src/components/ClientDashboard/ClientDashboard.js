@@ -42,7 +42,7 @@ function ClientDashboard({ userData, contentD }) {
     console.log(contentD);
     switch (contentD) {
       case "dashboard":
-        return <Sample />;
+        return <Sample userData={userData} />;
       case "trade_reports":
         return <TradeTable userData={userData} />;
       case "all_transactions":
@@ -81,7 +81,7 @@ function ClientDashboard({ userData, contentD }) {
           </form>
           <div>
             {/* <BellIcon className="h-5 w-5" /> */}
-            {/* <Notification userId={userData.id} /> */}
+            <Notification userId={userData.id} />
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

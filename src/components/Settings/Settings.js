@@ -21,6 +21,10 @@ export default function Settings(userData) {
       </div>
       <div className="grid grid-cols-2 gap-6 p-6">
         <div className="space-y-1">
+          <p className="text-sm font-medium text-muted-foreground">ID</p>
+          <p className="text-base text-foreground">{user.id}</p>
+        </div>
+        <div className="space-y-1">
           <p className="text-sm font-medium text-muted-foreground">
             Date of Birth
           </p>
@@ -38,9 +42,20 @@ export default function Settings(userData) {
           <p className="text-sm font-medium text-muted-foreground">Phone</p>
           <p className="text-base text-foreground">{user.phone}</p>
         </div>
+
         <div className="space-y-1">
-          <p className="text-sm font-medium text-muted-foreground">ID</p>
+          <p className="text-sm font-medium text-muted-foreground">UPI ID</p>
+          <p className="text-base text-foreground">{user.upi}</p>
+        </div>
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-muted-foreground">
+            Account No.
+          </p>
           <p className="text-base text-foreground">{user.id}</p>
+        </div>
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-muted-foreground">IFSC Code</p>
+          <p className="text-base text-foreground">{user.phone}</p>
         </div>
       </div>
     </section>

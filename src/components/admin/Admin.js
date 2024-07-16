@@ -72,10 +72,11 @@ export default function Admin() {
                 <TabsTrigger value="trade">Trades</TabsTrigger>
                 <TabsTrigger value="transactions">Transactions</TabsTrigger>
                 <TabsTrigger value="notifications">Notifications</TabsTrigger>
-                <TabsTrigger value="settings">Settings</TabsTrigger>
+                {/* <TabsTrigger value="settings">Settings</TabsTrigger> */}
               </TabsList>
               <TabsContent value="overview" className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <Settings userData={selectedTeam} />
+                {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                   <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">
@@ -200,7 +201,7 @@ export default function Admin() {
                       <RecentSales />
                     </CardContent>
                   </Card>
-                </div>
+                </div> */}
               </TabsContent>
               <TabsContent value="trade">
                 <Trade userData={selectedTeam} />
@@ -211,9 +212,9 @@ export default function Admin() {
               <TabsContent value="notifications">
                 <NotificationForm userId={selectedTeam.id} />
               </TabsContent>
-              <TabsContent value="settings">
+              {/* <TabsContent value="settings">
                 <Settings userData={selectedTeam} />
-              </TabsContent>
+              </TabsContent> */}
             </Tabs>
           </div>
         )}
