@@ -170,7 +170,7 @@ function Sample({ userData }) {
                     {transaction.transactionId}
                   </TableCell>
                   <TableCell>{transaction.type}</TableCell>
-                  <TableCell>{transaction.amount}</TableCell>
+                  <TableCell>₹ {transaction.amount}</TableCell>
                   <TableCell>
                     {timestampToDate(transaction.timestamp)}
                   </TableCell>

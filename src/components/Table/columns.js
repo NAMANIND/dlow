@@ -61,7 +61,7 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex items-center">
-        <span>{row.getValue("amount")}</span>
+        <span>₹ {row.getValue("amount")}</span>
       </div>
     ),
   },
