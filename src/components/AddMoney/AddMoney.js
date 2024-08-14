@@ -80,6 +80,7 @@ function AddMoney({ userData }) {
       setTransactionId("");
       setScreenshot(null);
       setScreenshotPreview(null);
+      setLoading(false);
     } catch (e) {
       console.error("Error adding transaction: ", e);
     }
