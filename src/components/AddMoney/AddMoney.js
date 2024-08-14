@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { EnterFullScreenIcon } from "@radix-ui/react-icons";
 
 function AddMoney({ userData }) {
   const [amount, setAmount] = useState(0);
@@ -117,7 +118,10 @@ function AddMoney({ userData }) {
           </CardDescription>
           <Dialog>
             <DialogTrigger asChild>
-              <Button>Show QR Code</Button>
+              <Button>
+                Show QR Code &nbsp;
+                <EnterFullScreenIcon width={20} height={20} />
+              </Button>
             </DialogTrigger>
             <DialogContent className="p-8">
               {/* Your QR code image or component goes here */}
