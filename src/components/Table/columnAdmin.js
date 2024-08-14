@@ -19,7 +19,12 @@ import {
   DropdownMenuItem,
 } from "../../components/ui/dropdown-menu";
 import { Button } from "../../components/ui/button";
-import { GearIcon } from "@radix-ui/react-icons";
+import { GearIcon, ImageIcon } from "@radix-ui/react-icons";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "../../components/ui/dialog";
 
 async function handleUpdateStatus(transactionId, newStatus) {
   if (!newStatus) return;
@@ -124,6 +129,36 @@ export const columnsAdmin = [
       </div>
     ),
   },
+
+  {
+    accessorKey: "screenshotUrl",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Screenshot" />
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center">
+        {row.getValue("screenshotUrl") ? (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <ImageIcon className="w-4 h-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <img
+                src={row.getValue("screenshotUrl")}
+                alt="Payment Screenshot"
+                className="object-contain w-full h-full max-h-[80vh]"
+              />
+            </DialogContent>
+          </Dialog>
+        ) : (
+          <span>No Screenshot</span>
+        )}
+      </div>
+    ),
+  },
+
   {
     accessorKey: "note",
     header: ({ column }) => (

@@ -5,15 +5,17 @@ import React, { useEffect, useState } from "react";
 import ClientDashboard from "../ClientDashboard/ClientDashboard";
 import Cookies from "js-cookie";
 import { db } from "../../../firbase/clientApp";
+import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const userID = Cookies.get("userId");
   const [content, setContent] = useState("dashboard");
+  const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar
+
   const isSelected =
     "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-50";
-
   const isNotSelected =
     "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-50 transition-all";
 
@@ -27,6 +29,10 @@ export default function Dashboard() {
           return doc.data();
         } else {
           console.log("No such document!");
+          // head over to the login page
+          if (typeof window !== "undefined") {
+            window.location.href = "/login";
+          }
         }
       })
       .catch((error) => {
@@ -51,17 +57,111 @@ export default function Dashboard() {
   }, [userID, user]);
 
   return (
-    <div className="grid min-h-screen w-full overflow-hidden lg:grid-cols-[280px_1fr]">
+    <div className="relative min-h-screen w-full overflow-hidden lg:grid lg:grid-cols-[280px_1fr]">
+      {/* Mobile Sidebar */}
+      <div className="lg:hidden">
+        {/* Hamburger Menu for Mobile */}
+        <div className="lg:hidden p-4">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="text-gray-900 dark:text-gray-50"
+          >
+            {sidebarOpen ? (
+              <Cross1Icon className="h-6 w-6" />
+            ) : (
+              <HamburgerMenuIcon className="h-6 w-6" />
+            )}
+          </button>
+        </div>
+
+        {/* Sidebar */}
+        <div
+          className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-gray-100/40 dark:bg-gray-800/100 transition-transform lg:relative lg:translate-x-0 ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div className="flex flex-col gap-2">
+            <div className="flex h-[60px] items-center px-6">
+              <div className="flex items-center gap-2 font-semibold" href="#">
+                <Package2Icon className="h-6 w-6" />
+                <span className="">Infinity Fund LTD</span>
+              </div>
+            </div>
+            <div className="flex-1">
+              <nav className="grid items-start px-4 text-sm font-medium cursor-pointer">
+                <div
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
+                    content === "dashboard" ? isSelected : isNotSelected
+                  }`}
+                  onClick={() => setContent("dashboard")}
+                >
+                  <Grid3x3Icon className="h-4 w-4" />
+                  Dashboard
+                </div>
+
+                <div
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
+                    content === "trade_reports" ? isSelected : isNotSelected
+                  }`}
+                  onClick={() => setContent("trade_reports")}
+                >
+                  <ActivityIcon className="h-4 w-4" />
+                  Trade Reports
+                </div>
+
+                <div
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
+                    content === "all_transactions" ? isSelected : isNotSelected
+                  }`}
+                  onClick={() => setContent("all_transactions")}
+                >
+                  <ListIcon className="h-4 w-4" />
+                  All Transactions
+                </div>
+                <div
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
+                    content === "add_money" ? isSelected : isNotSelected
+                  }`}
+                  onClick={() => setContent("add_money")}
+                >
+                  <CirclePlusIcon className="h-4 w-4" />
+                  Add Money
+                </div>
+
+                <div
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
+                    content === "withdraw" ? isSelected : isNotSelected
+                  }`}
+                  onClick={() => setContent("withdraw")}
+                >
+                  <CircleMinusIcon className="h-4 w-4" />
+                  Withdraw
+                </div>
+
+                <div
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
+                    content === "settings" ? isSelected : isNotSelected
+                  }`}
+                  onClick={() => setContent("settings")}
+                >
+                  <SettingsIcon className="h-4 w-4" />
+                  My Account
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="hidden border-r bg-gray-100/40 lg:block dark:bg-gray-800/40">
         <div className="flex flex-col gap-2">
           <div className="flex h-[60px] items-center px-6">
             <div className="flex items-center gap-2 font-semibold" href="#">
               <Package2Icon className="h-6 w-6" />
-              <span className="">Capital One Broking</span>
+              <span className="">Infinity Fund LTD</span>
             </div>
           </div>
           <div className="flex-1">
-            <nav className="grid items-start px-4 text-sm font-medium">
+            <nav className="grid items-start px-4 text-sm font-medium cursor-pointer">
               <div
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
                   content === "dashboard" ? isSelected : isNotSelected
@@ -118,13 +218,25 @@ export default function Dashboard() {
                 onClick={() => setContent("settings")}
               >
                 <SettingsIcon className="h-4 w-4" />
-                Settings
+                My Account
               </div>
             </nav>
           </div>
         </div>
       </div>
-      {userData && content && getPageContent()}
+
+      {/* Main Content */}
+      <div className="flex-1 lg:ml-0">
+        {userData && content && getPageContent()}
+      </div>
+
+      {/* Overlay for Mobile Sidebar */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black opacity-50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
     </div>
   );
 }

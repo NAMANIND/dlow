@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { db } from "../../../firbase/clientApp"; // Import Firestore instance
+import { db, storage } from "../../../firbase/clientApp"; // Import Firestore instance
 import { collection, addDoc, updateDoc, doc } from "firebase/firestore"; // Import Firestore functions
 import {
   Card,
@@ -14,19 +14,43 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 function AddMoney({ userData }) {
   const [amount, setAmount] = useState(0);
   const [note, setNote] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("bank_transfer");
+  const [transactionId, setTransactionId] = useState("");
+  const [screenshot, setScreenshot] = useState(null);
+  const [screenshotPreview, setScreenshotPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleScreenshotChange = (e) => {
+    const file = e.target.files[0];
+    setScreenshot(file);
+    setScreenshotPreview(URL.createObjectURL(file));
+  };
 
   const handleSendMoney = async () => {
+    if (!transactionId || !screenshot) {
+      alert("Please enter a transaction ID and upload a screenshot.");
+      return;
+    }
+
+    const isconfirm = confirm(
+      "Please confirm your transaction ID and screenshot before submitting."
+    );
+
+    if (!isconfirm) return;
+
+    setLoading(true);
+
     const transactionData = {
       recipient: userData.username,
       amount,
       note,
-      paymentMethod,
+      paymentMethod: "UPI", // Since payment method is QR
+      transactionId,
+      screenshotUrl: null, // Placeholder for screenshot URL
       userId: userData.id, // Adding user ID from userData
       timestamp: new Date().toISOString(),
       status: "pending",
@@ -41,31 +65,68 @@ function AddMoney({ userData }) {
       console.log("Transaction successfully added!");
 
       // Add the transaction ID to the document
-      const transactionId = docRef.id;
-      await updateDoc(doc(db, "transactions", transactionId), {
+      const transactionIdl = docRef.id;
+      await updateDoc(doc(db, "transactions", transactionIdl), {
         transactionId,
+        screenshotUrl: await uploadScreenshot(screenshot, transactionId),
       });
 
-      console.log("Transaction ID successfully added!");
-
+      console.log("Transaction ID and screenshot successfully added!");
+      alert("Transaction successfully added!");
       // Reset form fields
-
       setAmount(0);
       setNote("");
-      setPaymentMethod("bank_transfer");
+      setTransactionId("");
+      setScreenshot(null);
+      setScreenshotPreview(null);
     } catch (e) {
       console.error("Error adding transaction: ", e);
     }
+  };
+
+  const uploadFile = async (folder, file, fileName) => {
+    if (!file) return null;
+    const storageRef = storage.ref();
+    const fileRef = storageRef.child(`${folder}/${fileName}`);
+
+    try {
+      console.log(`Uploading ${fileName} to ${folder}...`);
+      await fileRef.put(file);
+      const downloadURL = await fileRef.getDownloadURL();
+      console.log(`Uploaded ${fileName} to ${folder}. URL: ${downloadURL}`);
+      return downloadURL;
+    } catch (error) {
+      console.error(`Error uploading ${fileName}:`, error);
+      throw error;
+    }
+  };
+
+  const uploadScreenshot = async (file, transactionId) => {
+    const fileName = `${transactionId}-screenshot.jpg`;
+    return uploadFile("screenshots", file, fileName);
   };
 
   return (
     <div className="flex-1 space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle>Send Money</CardTitle>
+          <CardTitle>Add Money</CardTitle>
           <CardDescription>
-            Enter the details to send money to a wallet.
+            Make a payment using a QR code. Enter the details to add money to a
+            wallet.
           </CardDescription>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Show QR Code</Button>
+            </DialogTrigger>
+            <DialogContent className="p-8">
+              {/* Your QR code image or component goes here */}
+              <img src="/qr/qr.jpg" alt="QR Code" />
+              <p className="mt-4 text-center">
+                Scan this QR code to complete your payment.
+              </p>
+            </DialogContent>
+          </Dialog>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-2">
@@ -97,29 +158,38 @@ function AddMoney({ userData }) {
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="payment-method">Payment Method</Label>
-            <RadioGroup
-              id="payment-method"
-              value={paymentMethod}
-              onValueChange={setPaymentMethod}
-            >
-              <div className="flex items-center gap-2">
-                <RadioGroupItem value="bank_transfer" id="bank-transfer" />
-                <Label htmlFor="bank-transfer">Bank Transfer</Label>
-              </div>
-              <div className="flex items-center gap-2">
-                <RadioGroupItem value="crypto" id="crypto" />
-                <Label htmlFor="crypto">Cryptocurrency</Label>
-              </div>
-              <div className="flex items-center gap-2">
-                <RadioGroupItem value="mobile_money" id="mobile-money" />
-                <Label htmlFor="mobile-money">Mobile Money</Label>
-              </div>
-            </RadioGroup>
+            <Label htmlFor="transaction-id">Transaction ID</Label>
+            <Input
+              id="transaction-id"
+              placeholder="Enter the transaction ID from the payment"
+              value={transactionId}
+              onChange={(e) => {
+                const transactionId = e.target.value.toUpperCase();
+                setTransactionId(transactionId);
+              }}
+            />
+          </div>
+          <div className="grid gap-2 ">
+            <Label htmlFor="screenshot">Upload Payment Screenshot</Label>
+            <Input
+              id="screenshot"
+              type="file"
+              accept="image/*"
+              onChange={handleScreenshotChange}
+            />
+            {screenshotPreview && (
+              <img
+                src={screenshotPreview}
+                alt="Screenshot Preview"
+                className="mt-2 h-40 w-auto object-cover"
+              />
+            )}
           </div>
         </CardContent>
-        <CardFooter>
-          <Button onClick={handleSendMoney}>Send Money</Button>
+        <CardFooter className="space-x-2">
+          <Button onClick={handleSendMoney}>
+            {loading ? "Sending..." : "Send Money"}
+          </Button>
         </CardFooter>
       </Card>
     </div>

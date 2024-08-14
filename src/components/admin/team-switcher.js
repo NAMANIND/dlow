@@ -65,8 +65,16 @@ export default function TeamSwitcher({ className, onTeamSelect }) {
         id: doc.id,
       }));
       setTeams(teamsList);
-      setSelectedTeam(teamsList[0]);
-      onTeamSelect(teamsList[0]);
+
+      const selectedTeamId = localStorage.getItem("selectedTeam");
+      const selectedTeam = teamsList.find((team) => team.id === selectedTeamId);
+      if (selectedTeam) {
+        setSelectedTeam(selectedTeam);
+        onTeamSelect(selectedTeam);
+      } else {
+        setSelectedTeam(teamsList[0]);
+        onTeamSelect(teamsList[0]);
+      }
     }
     fetchTeams();
   }, []);

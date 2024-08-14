@@ -22,16 +22,20 @@ export default function AccountLogin({ setIsLogin }) {
 
   const handleChange = (e) => {
     const { id, value, checked } = e.target;
-    setFormData({ ...formData, [id]: id === "rememberMe" ? checked : value });
+    setFormData({
+      ...formData,
+      [id]: id === "rememberMe" ? !formData.rememberMe : value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { username, password } = formData;
+    const { username, password, rememberMe } = formData;
+    const uppercaseUsername = username.toUpperCase();
     try {
       const userData = await db
         .collection("users")
-        .where("username", "==", username)
+        .where("username", "==", uppercaseUsername)
         .get()
         .then((querySnapshot) => {
           let data = {};
@@ -50,15 +54,15 @@ export default function AccountLogin({ setIsLogin }) {
         const secret = new TextEncoder().encode(secretKey);
         const token = await new SignJWT({ userId: userData.id })
           .setProtectedHeader({ alg: "HS256" })
-          // .setExpirationTime("1h")
+          .setExpirationTime(rememberMe ? "3650d" : "1h") // Set token expiration time based on rememberMe value
           .sign(secret);
 
         document.cookie = `authToken=${token}; path=/; max-age=${
-          60 * 60 * 24 * 365 * 10
-        }`; // 10 years
+          rememberMe ? 60 * 60 * 24 * 365 * 10 : 60 * 60 // Set cookie max-age based on rememberMe value
+        }`; // 10 years or 1 hour
         document.cookie = `userId=${userData.id}; path=/; max-age=${
-          60 * 60 * 24 * 365 * 10
-        }`; // 10 years
+          rememberMe ? 60 * 60 * 24 * 365 * 10 : 60 * 60 // Set cookie max-age based on rememberMe value
+        }`; // 10 years or 1 hour
 
         window.open("/dashboard", "_self");
       }
@@ -74,7 +78,7 @@ export default function AccountLogin({ setIsLogin }) {
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-bold">Welcome Back!</h1>
           <p className="text-gray-500 dark:text-gray-400">
-            Sign in to continue with Capital One Broking User Panel
+            Sign in to continue with Infinity Fund LTD User Panel
           </p>
         </div>
         <div className="space-y-4">
@@ -104,27 +108,29 @@ export default function AccountLogin({ setIsLogin }) {
               <Checkbox
                 id="rememberMe"
                 checked={formData.rememberMe}
-                onChange={handleChange}
+                onClick={() =>
+                  setFormData({ ...formData, rememberMe: !formData.rememberMe })
+                }
               />
               <Label className="text-sm" htmlFor="rememberMe">
                 Remember me
               </Label>
             </div>
-            <Link className="text-sm text-blue-600 underline" href="#">
-              Forget Password
-            </Link>
           </div>
           <Button className="w-full" type="submit">
             ACCOUNT LOGIN
           </Button>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Don&apos;t have an account?
-          </p>
-          <div
-            className="text-blue-600 underline cursor-pointer"
-            onClick={() => setIsLogin(false)}
-          >
-            Signup for free
+          <div className="text-center">
+            <p className="text-gray-600 dark:text-gray-400">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="#"
+                className="font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                onClick={() => setIsLogin(false)}
+              >
+                Signup for free
+              </Link>
+            </p>
           </div>
         </div>
       </div>

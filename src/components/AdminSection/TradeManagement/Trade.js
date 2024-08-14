@@ -113,7 +113,7 @@ export default function Trade({ userData }) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-full mx-auto px-4 py-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-full mx-auto md:px-4 px-0 py-8">
       <div className="col-span-1 md:col-span-1">
         <Card>
           <CardHeader>

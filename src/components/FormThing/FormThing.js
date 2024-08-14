@@ -34,7 +34,7 @@ function FormThing({ userData, admin }) {
 
   return (
     <>
-      <div className="md:hidden">
+      {/* <div className="md:hidden">
         <Image
           src="/examples/tasks-light.png"
           width={1280}
@@ -49,8 +49,8 @@ function FormThing({ userData, admin }) {
           alt="Playground"
           className="hidden dark:block"
         />
-      </div>
-      <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
+      </div> */}
+      <div className=" h-full flex-1 flex-col space-y-8 md:p-8 p-0 md:pt-0 pt-4 md:flex">
         <div className="flex items-center justify-between space-y-2">
           <div>
             <h2 className="text-2xl font-bold tracking-tight">
@@ -64,11 +64,25 @@ function FormThing({ userData, admin }) {
             <UserNav />
           </div> */}
         </div>
-        {admin ? (
-          <DataTable data={tasks} columns={columnsAdmin} />
-        ) : (
-          <DataTable data={tasks} columns={columns} />
-        )}
+
+        <div className="md:hidden flex overflow-hidden w-full max-w-[85vw] h-full ">
+          {admin ? (
+            <div className="w-full">
+              <DataTable data={tasks} columns={columnsAdmin} />
+            </div>
+          ) : (
+            <div className="w-full">
+              <DataTable data={tasks} columns={columns} />
+            </div>
+          )}
+        </div>
+        <div className="md:block hidden">
+          {admin ? (
+            <DataTable data={tasks} columns={columnsAdmin} />
+          ) : (
+            <DataTable data={tasks} columns={columns} />
+          )}
+        </div>
       </div>
     </>
   );

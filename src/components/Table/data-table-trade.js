@@ -57,7 +57,7 @@ export function DataTable({ columns, data }) {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 overflow-auto">
       <DataTableToolbar table={table} />
       <div
         className="rounded-md border"

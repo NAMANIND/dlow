@@ -24,13 +24,53 @@ import { db } from "../../../firbase/clientApp"; // Adjust the import path as ne
 import { collection, getDocs } from "firebase/firestore";
 import NotificationForm from "../AdminSection/NotificationForm/NotificationForm";
 import Settings from "../Settings/Settings";
+import Cookies from "js-cookie";
 
 export default function Admin() {
   const [selectedTeam, setSelectedTeam] = React.useState(null);
+  const userID = Cookies.get("userId");
+  const [userData, setUserData] = React.useState(null);
+
+  React.useEffect(() => {
+    const getUser = async () => {
+      const userDatay = await db
+        .collection("users")
+        .doc(userID)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            return doc.data();
+          } else {
+            console.log("No such document!");
+            // head over to the login page
+            if (typeof window !== "undefined") {
+              window.location.href = "/login";
+            }
+          }
+        })
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
+      setUserData(userDatay);
+      console.log(userDatay);
+    };
+    getUser();
+  }, [userID]);
+
+  if (!userData) {
+    return null;
+  }
+
+  if (userData.role !== "admin") {
+    if (typeof window !== "undefined") {
+      window.location.href = "/dashboard";
+    }
+    return null;
+  }
 
   return (
     <>
-      <div className="md:hidden">
+      {/* <div className="md:hidden">
         <Image
           src="/examples/dashboard-light.png"
           width={1280}
@@ -45,20 +85,20 @@ export default function Admin() {
           alt="Dashboard"
           className="hidden dark:block"
         />
-      </div>
-      <div className="hidden flex-col md:flex">
+      </div> */}
+      <div className=" flex-col md:flex">
         <div className="border-b">
           <div className="flex h-16 items-center px-4">
             <TeamSwitcher onTeamSelect={setSelectedTeam} />
             {/* <MainNav className="mx-6" /> */}
             <div className="ml-auto flex items-center space-x-4">
               {/* <Search /> */}
-              <UserNav />
+              {/* <UserNav /> */}
             </div>
           </div>
         </div>
         {selectedTeam && (
-          <div className="flex-1 space-y-4 p-8 pt-6">
+          <div className="flex-1 space-y-4 md:p-8 p-4 pt-6">
             {/* <div className="flex items-center justify-between space-y-2">
               <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
               <div className="flex items-center space-x-2">
@@ -66,8 +106,8 @@ export default function Admin() {
                 <Button>Download</Button>
               </div>
             </div> */}
-            <Tabs defaultValue="overview" className="space-y-4">
-              <TabsList>
+            <Tabs defaultValue="overview" className="space-y-4 ">
+              <TabsList className=" md:w-fit md:h-auto md:flex-row  w-full h-full flex flex-col ">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="trade">Trades</TabsTrigger>
                 <TabsTrigger value="transactions">Transactions</TabsTrigger>

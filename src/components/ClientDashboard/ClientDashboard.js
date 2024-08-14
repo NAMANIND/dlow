@@ -69,7 +69,7 @@ function ClientDashboard({ userData, contentD }) {
           <h1 className="font-semibold text-lg">Dashboard</h1>
         </div>
         <div className="flex flex-1 items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-          <form className="ml-auto flex-1 sm:flex-initial">
+          <form className="ml-auto flex-1 sm:flex-initial pointer-events-none opacity-0">
             <div className="relative">
               <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
               <Input
@@ -101,11 +101,31 @@ function ClientDashboard({ userData, contentD }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>Settings</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
-              <DropdownMenuSeparator />
+              {/* <DropdownMenuItem
+                onClick={() => {
+                  window.location.href = "/account";
+                }}
+              >
+                My Account{" "}
+              </DropdownMenuItem> */}
+              <DropdownMenuItem
+                onClick={() => {
+                  const copyEmail = () => {
+                    const email = "infinityfundltd535@gmail.com";
+                    navigator.clipboard.writeText(email);
+                    alert(
+                      "For Support, Please Email us at infinityfundltd535@gmail.com. \nEmail copied to clipboard: " +
+                        email
+                    );
+                  };
+                  copyEmail();
+                }}
+              >
+                Support
+              </DropdownMenuItem>
+              {/* <DropdownMenuSeparator /> */}
               <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

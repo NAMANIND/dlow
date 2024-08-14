@@ -19,7 +19,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 function Withdraw({ userData }) {
   const [amount, setAmount] = useState(0);
   const [note, setNote] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("bank_transfer");
+  const [paymentMethod, setPaymentMethod] = useState("UPI");
 
   const handleWithdrawMoney = async () => {
     const transactionData = {
@@ -52,7 +52,7 @@ function Withdraw({ userData }) {
 
       setAmount(0);
       setNote("");
-      setPaymentMethod("bank_transfer");
+      setPaymentMethod("UPI");
     } catch (e) {
       console.error("Error adding transaction: ", e);
     }
@@ -96,7 +96,7 @@ function Withdraw({ userData }) {
               onChange={(e) => setNote(e.target.value)}
             />
           </div>
-          <div className="grid gap-2">
+          {/* <div className="grid gap-2">
             <Label htmlFor="payment-method">Payment Method</Label>
             <RadioGroup
               id="payment-method"
@@ -116,7 +116,7 @@ function Withdraw({ userData }) {
                 <Label htmlFor="mobile-money">Mobile Money</Label>
               </div>
             </RadioGroup>
-          </div>
+          </div> */}
         </CardContent>
         <CardFooter>
           <Button onClick={handleWithdrawMoney}>Withdraw Money</Button>

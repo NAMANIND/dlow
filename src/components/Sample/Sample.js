@@ -9,7 +9,60 @@ import {
   Table,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-function Sample() {
+import { useEffect, useState } from "react";
+import { db } from "../../../firbase/clientApp";
+import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
+function Sample({ userData }) {
+  const [tasks, setTasks] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const q = query(
+        collection(db, "trades"),
+        where("userId", "==", userData.id),
+        orderBy("timestamp", "desc")
+        // limit(3) // Limit the number of documents to 3
+      );
+      const querySnapshot = await getDocs(q);
+      const tasksData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setTasks(tasksData);
+    };
+
+    const fetchTransactions = async () => {
+      const q = query(
+        collection(db, "transactions"),
+        where("userId", "==", userData.id),
+        orderBy("timestamp", "desc")
+        // limit(3) // Limit the number of documents to 3
+      );
+      const querySnapshot = await getDocs(q);
+      const transactionsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setTransactions(transactionsData);
+
+      console.log(transactionsData);
+    };
+
+    fetchTransactions();
+
+    fetchTasks();
+  }, [userData.id]);
+
+  // function to convert timestamp to date
+  function timestampToDate(timestamp) {
+    const date = new Date(timestamp);
+    return date.toDateString
+      ? date.toDateString()
+      : new Date(date).toDateString
+      ? new Date(date).toDateString()
+      : "N/A";
+  }
+
   return (
     <div>
       <iframe
@@ -18,11 +71,22 @@ function Sample() {
         title="ticker tape TradingView widget"
         lang="en"
         allowfullscreen=""
-        className="w-full h-12"
+        className="w-full md:h-12 h-20"
       ></iframe>
+      <div className="my-4">
+        <h1 className="text-2xl font-semibold">
+          Welcome, {userData.firstName}
+        </h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Here's what's happening with your account today
+        </p>
+      </div>
+      <div className="my-4">
+        <h1 className="text-xl font-semibold">Recent Trades</h1>
+      </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
+        {/* <Card>
+          <CardHeader className="flex flex-row items-c</Card>enter justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Balance</CardTitle>
             <DollarSignIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
           </CardHeader>
@@ -60,85 +124,62 @@ function Sample() {
               +19% from last month
             </p>
           </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Active Trades</CardTitle>
-            <ActivityIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+573</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              +201 since last hour
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Referrals</CardTitle>
-            <UsersIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+128</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              +20 since last week
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Ranking Badge</CardTitle>
-            <AwardIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Gold</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Achieved on May 15, 2023
-            </p>
-          </CardContent>
-        </Card>
+        </Card> */}
+        {tasks.slice(0, 3).map((task) => (
+          <Card key={task.tradeId}>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-lg font-medium">{task.type}</CardTitle>
+              <ActivityIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            </CardHeader>
+            <CardContent className="flex flex-col gap-2">
+              <div className="text-2xl font-bold">{task.symbol}</div>
+              <div className="flex items-center gap-2">
+                {" "}
+                <div className="text-lg font-medium">Qty: {task.quantity}</div>
+                <div className="text-lg font-medium">Price: {task.price}</div>
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {timestampToDate(task.timestamp)}
+              </p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
+
+      <div className="my-4">
+        <h1 className="text-xl font-semibold">Recent Transaction</h1>
+      </div>
+
       <div>
         <Card>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">Transaction</TableHead>
+                <TableHead className="">Transaction ID</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Date</TableHead>
-                <TableHead className="text-right">Status</TableHead>
+                <TableHead className="">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell className="font-medium">INV001</TableCell>
-                <TableCell>Deposit</TableCell>
-                <TableCell>$250.00</TableCell>
-                <TableCell>May 20, 2023</TableCell>
-                <TableCell className="text-right">
-                  <Badge variant="success">Completed</Badge>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">INV002</TableCell>
-                <TableCell>Withdrawal</TableCell>
-                <TableCell>$150.00</TableCell>
-                <TableCell>May 15, 2023</TableCell>
-                <TableCell className="text-right">
-                  <Badge variant="warning">Pending</Badge>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">INV003</TableCell>
-                <TableCell>Trade</TableCell>
-                <TableCell>$350.00</TableCell>
-                <TableCell>May 10, 2023</TableCell>
-                <TableCell className="text-right">
-                  <Badge variant="success">Completed</Badge>
-                </TableCell>
-              </TableRow>
-              <TableRow />
+              {transactions.slice(0, 3).map((transaction) => (
+                <TableRow key={transaction.id}>
+                  <TableCell className="font-medium">
+                    {transaction.transactionId}
+                  </TableCell>
+                  <TableCell>{transaction.type}</TableCell>
+                  <TableCell>{transaction.amount}</TableCell>
+                  <TableCell>
+                    {timestampToDate(transaction.timestamp)}
+                  </TableCell>
+                  <TableCell className="">
+                    <Badge variant={transaction.status}>
+                      {transaction.status}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </Card>

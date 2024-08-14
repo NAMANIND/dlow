@@ -23,6 +23,8 @@ export default function Notification({ userId }) {
   // unique set of unread notifications
   const [newNotiLength, setNewNotiLength] = useState(new Set());
 
+  const [onlyonce, setonlyonce] = useState(true);
+
   useEffect(() => {
     const fetchNotifications = async () => {
       if (!userId) return;
@@ -45,67 +47,126 @@ export default function Notification({ userId }) {
   }, [userId, notifications]);
 
   useEffect(() => {
-    // Update the unread notifications when the notifications change
-    setNewNotiLength((prev) => {
-      const newNotiLength = new Set();
-      notifications.forEach((notification) => {
-        const notificationTime = new Date(
-          notification.timestamp.seconds * 1000
-        );
-        const currentTime = new Date();
-        const timeDifference = currentTime - notificationTime;
-        const isUnread = timeDifference < 6 * 60 * 60 * 1000; // Less than 6 hours
+    if (onlyonce) {
+      setonlyonce(false);
+      // Update the unread notifications when the notifications change
+      setNewNotiLength((prev) => {
+        const newNotiLength = new Set();
+        notifications.forEach((notification) => {
+          const notificationTime = new Date(
+            notification.timestamp.seconds * 1000
+          );
+          const currentTime = new Date();
+          const timeDifference = currentTime - notificationTime;
+          const isUnread = timeDifference < 6 * 60 * 60 * 1000; // Less than 6 hours
 
-        if (isUnread) {
-          newNotiLength.add(notification.timestamp.seconds);
-        }
+          if (isUnread) {
+            newNotiLength.add(notification.timestamp.seconds);
+          }
+        });
+        return newNotiLength;
       });
-      return newNotiLength;
-    });
-  }, [userId]);
+    }
+  }, []);
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline" size="icon" className="rounded-full relative">
-          <BellIcon className="w-4 h-4" />
-          {newNotiLength.size > 0 && (
-            <span className="absolute top-0 right-0 block w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        side="left"
-        align="start"
-        className="w-80 p-0 overflow-hidden rounded-md shadow-lg"
-      >
-        <Card className="shadow-none border-0">
-          <CardHeader className="border-b">
-            <CardTitle>Notifications</CardTitle>
-            <CardDescription>
-              You have {newNotiLength.size} unread messages.
-            </CardDescription>
-          </CardHeader>
-          <CardContent
-            className="max-h-[400px] overflow-auto p-6"
-            style={{
-              scrollbarWidth: "thin",
-              scrollbarColor: "rgba(209, 213, 219, 0.5)  transparent",
-            }}
+    <div>
+      <div className="md:hidden block">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full relative"
+            >
+              <BellIcon className="w-4 h-4" />
+              {newNotiLength.size > 0 && (
+                <span className="absolute top-0 right-0 block w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+              )}
+            </Button>
+          </PopoverTrigger>
+
+          <PopoverContent
+            side="bottom"
+            align="start"
+            className="w-80 mr-9 p-0 overflow-hidden rounded-md shadow-lg"
           >
-            {notifications.map((notification) => (
-              <NotificationItem
-                key={notification.id}
-                type={notification.type}
-                message={notification.message}
-                timestamp={notification.timestamp}
-                setNewNotiLength={setNewNotiLength}
-              />
-            ))}
-          </CardContent>
-        </Card>
-      </PopoverContent>
-    </Popover>
+            <Card className="shadow-none border-0">
+              <CardHeader className="border-b">
+                <CardTitle>Notifications</CardTitle>
+                <CardDescription>
+                  You have {newNotiLength.size} unread messages.
+                </CardDescription>
+              </CardHeader>
+              <CardContent
+                className="max-h-[400px] overflow-auto p-6"
+                style={{
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "rgba(209, 213, 219, 0.5)  transparent",
+                }}
+              >
+                {notifications.map((notification) => (
+                  <NotificationItem
+                    key={notification.id}
+                    type={notification.type}
+                    message={notification.message}
+                    timestamp={notification.timestamp}
+                    setNewNotiLength={setNewNotiLength}
+                  />
+                ))}
+              </CardContent>
+            </Card>
+          </PopoverContent>
+        </Popover>
+      </div>
+      <div className="md:block hidden">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full relative"
+            >
+              <BellIcon className="w-4 h-4" />
+              {newNotiLength.size > 0 && (
+                <span className="absolute top-0 right-0 block w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            side="left"
+            align="start"
+            className="w-80 p-0 overflow-hidden rounded-md shadow-lg"
+          >
+            <Card className="shadow-none border-0">
+              <CardHeader className="border-b">
+                <CardTitle>Notifications</CardTitle>
+                <CardDescription>
+                  You have {newNotiLength.size} unread messages.
+                </CardDescription>
+              </CardHeader>
+              <CardContent
+                className="max-h-[400px] overflow-auto p-6"
+                style={{
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "rgba(209, 213, 219, 0.5)  transparent",
+                }}
+              >
+                {notifications.map((notification) => (
+                  <NotificationItem
+                    key={notification.id}
+                    type={notification.type}
+                    message={notification.message}
+                    timestamp={notification.timestamp}
+                    setNewNotiLength={setNewNotiLength}
+                  />
+                ))}
+              </CardContent>
+            </Card>
+          </PopoverContent>
+        </Popover>
+      </div>
+    </div>
   );
 }
 
