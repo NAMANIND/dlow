@@ -136,6 +136,7 @@ function Sample({ userData }) {
               <div className="flex items-center gap-2">
                 {" "}
                 <div className="text-lg font-medium">Qty: {task.quantity}</div>
+                <div className="text-lg font-medium  text-gray-500">|</div>
                 <div className="text-lg font-medium">Price: {task.price}</div>
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400">
