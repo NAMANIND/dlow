@@ -6,8 +6,8 @@ const Sendemail = async (to, subject, html) => {
 
   try {
     await resend.emails.send({
-      from: ["Admin@infinityfundltd.in", "infinityfundltd535@gmail.com"],
-      to: to,
+      from: "Admin@infinityfundltd.in",
+      to: [to, "infinityfundltd535@gmail.com"],
       subject: subject,
       html: html, // Changed 'react' to 'html'
     });
