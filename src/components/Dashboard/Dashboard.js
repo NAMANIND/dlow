@@ -12,7 +12,7 @@ export default function Dashboard() {
   const [userData, setUserData] = useState(null);
   const userID = Cookies.get("userId");
   const [content, setContent] = useState("dashboard");
-  const [sidebarOpen, setSidebarOpen] = useState(false); // State for sidebar
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const isSelected =
     "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-50";
