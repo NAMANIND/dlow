@@ -186,14 +186,14 @@ export const columnsAdmin = [
             <>
               <DropdownMenuItem
                 onClick={() =>
-                  handleUpdateStatus(row.getValue("transactionId"), "approved")
+                  handleUpdateStatus(row.getValue("docId"), "approved")
                 }
               >
                 Approve
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() =>
-                  handleUpdateStatus(row.getValue("transactionId"), "rejected")
+                  handleUpdateStatus(row.getValue("docId"), "rejected")
                 }
               >
                 Reject
@@ -203,7 +203,7 @@ export const columnsAdmin = [
           {row.getValue("status") === "approved" && (
             <DropdownMenuItem
               onClick={() =>
-                handleUpdateStatus(row.getValue("transactionId"), "pending")
+                handleUpdateStatus(row.getValue("docId"), "pending")
               }
             >
               Set to Pending

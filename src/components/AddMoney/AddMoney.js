@@ -21,6 +21,7 @@ function AddMoney({ userData }) {
   const [amount, setAmount] = useState(0);
   const [note, setNote] = useState("");
   const [transactionId, setTransactionId] = useState("");
+  const [docId, setDocId] = useState("");
   const [screenshot, setScreenshot] = useState(null);
   const [screenshotPreview, setScreenshotPreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -56,6 +57,7 @@ function AddMoney({ userData }) {
       timestamp: new Date().toISOString(),
       status: "pending",
       type: "Add Money",
+      docId,
     };
 
     try {
@@ -66,9 +68,11 @@ function AddMoney({ userData }) {
       console.log("Transaction successfully added!");
 
       // Add the transaction ID to the document
-      const transactionIdl = docRef.id;
+      const docId = docRef.id;
+      setDocId(docId);
       await updateDoc(doc(db, "transactions", transactionIdl), {
         transactionId,
+        docId,
         screenshotUrl: await uploadScreenshot(screenshot, transactionId),
       });
 
