@@ -20,8 +20,7 @@ import { EnterFullScreenIcon } from "@radix-ui/react-icons";
 function AddMoney({ userData }) {
   const [amount, setAmount] = useState(0);
   const [note, setNote] = useState("");
-  const [transactionId, setTransactionId] = useState("");
-  const [docId, setDocId] = useState("");
+  const [paymentId, setPaymentId] = useState("");
   const [screenshot, setScreenshot] = useState(null);
   const [screenshotPreview, setScreenshotPreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -33,7 +32,7 @@ function AddMoney({ userData }) {
   };
 
   const handleSendMoney = async () => {
-    if (!transactionId || !screenshot) {
+    if (!paymentId || !screenshot) {
       alert("Please enter a transaction ID and upload a screenshot.");
       return;
     }
@@ -51,13 +50,12 @@ function AddMoney({ userData }) {
       amount,
       note,
       paymentMethod: "UPI", // Since payment method is QR
-      transactionId,
+      paymentId,
       screenshotUrl: null, // Placeholder for screenshot URL
       userId: userData.id, // Adding user ID from userData
       timestamp: new Date().toISOString(),
       status: "pending",
       type: "Add Money",
-      docId,
     };
 
     try {
@@ -68,11 +66,11 @@ function AddMoney({ userData }) {
       console.log("Transaction successfully added!");
 
       // Add the transaction ID to the document
-      const docId = docRef.id;
-      setDocId(docId);
-      await updateDoc(doc(db, "transactions", transactionIdl), {
+      const transactionId = docRef.id;
+
+      await updateDoc(doc(db, "transactions", transactionId), {
         transactionId,
-        docId,
+        paymentId,
         screenshotUrl: await uploadScreenshot(screenshot, transactionId),
       });
 
@@ -81,7 +79,7 @@ function AddMoney({ userData }) {
       // Reset form fields
       setAmount(0);
       setNote("");
-      setTransactionId("");
+      setPaymentId("");
       setScreenshot(null);
       setScreenshotPreview(null);
       setLoading(false);
@@ -171,10 +169,10 @@ function AddMoney({ userData }) {
             <Input
               id="transaction-id"
               placeholder="Enter the transaction ID from the payment"
-              value={transactionId}
+              value={paymentId}
               onChange={(e) => {
                 const transactionId = e.target.value.toUpperCase();
-                setTransactionId(transactionId);
+                setPaymentId(transactionId);
               }}
             />
           </div>

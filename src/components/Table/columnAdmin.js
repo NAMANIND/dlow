@@ -77,6 +77,17 @@ export const columnsAdmin = [
     enableHiding: false,
   },
   {
+    accessorKey: "paymentId",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Payment ID" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-[80px] uppercase">{row.getValue("paymentId")}</div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
     accessorKey: "type",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Type" />
@@ -186,14 +197,14 @@ export const columnsAdmin = [
             <>
               <DropdownMenuItem
                 onClick={() =>
-                  handleUpdateStatus(row.getValue("docId"), "approved")
+                  handleUpdateStatus(row.getValue("transactionId"), "approved")
                 }
               >
                 Approve
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() =>
-                  handleUpdateStatus(row.getValue("docId"), "rejected")
+                  handleUpdateStatus(row.getValue("transactionId"), "rejected")
                 }
               >
                 Reject
@@ -203,7 +214,7 @@ export const columnsAdmin = [
           {row.getValue("status") === "approved" && (
             <DropdownMenuItem
               onClick={() =>
-                handleUpdateStatus(row.getValue("docId"), "pending")
+                handleUpdateStatus(row.getValue("transactionId"), "pending")
               }
             >
               Set to Pending

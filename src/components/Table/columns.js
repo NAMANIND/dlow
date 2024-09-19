@@ -31,12 +31,14 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "transactionId",
+    accessorKey: "paymentId",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Transaction ID" />
     ),
     cell: ({ row }) => (
-      <div className="w-[80px]">{row.getValue("transactionId")}</div>
+      <div>
+        <div className="w-[80px] uppercase ">{row.getValue("paymentId")}</div>
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,

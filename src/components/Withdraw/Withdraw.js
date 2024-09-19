@@ -42,8 +42,10 @@ function Withdraw({ userData }) {
 
       // Add the transaction ID to the document
       const transactionId = docRef.id;
+      const paymentId = docRef.id;
       await updateDoc(doc(db, "transactions", transactionId), {
         transactionId,
+        paymentId,
       });
 
       console.log("Transaction ID successfully added!");

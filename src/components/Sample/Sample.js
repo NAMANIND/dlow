@@ -167,7 +167,7 @@ function Sample({ userData }) {
               {transactions.slice(0, 3).map((transaction) => (
                 <TableRow key={transaction.id}>
                   <TableCell className="font-medium">
-                    {transaction.transactionId}
+                    {transaction.paymentId}
                   </TableCell>
                   <TableCell>{transaction.type}</TableCell>
                   <TableCell>₹ {transaction.amount}</TableCell>
