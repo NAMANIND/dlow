@@ -44,7 +44,7 @@ function ClientDashboard({ userData, contentD }) {
       case "dashboard":
         return <Sample userData={userData} />;
       case "trade_reports":
-        return <TradeTable userData={userData} />;
+        return <TradeTable userData={userData} admin={false} />;
       case "all_transactions":
         return <AllTransactions userData={userData} />;
       case "add_money":
@@ -62,7 +62,8 @@ function ClientDashboard({ userData, contentD }) {
     <div className="flex flex-col">
       <header className="flex h-14 lg:h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40">
         <Link className="lg:hidden" href="#">
-          <Package2Icon className="h-6 w-6" />
+          {/* <Package2Icon className="h-6 w-6" /> */}
+          <img src="/logom.png" alt="logo" className="h-6 w-6" />
           <span className="sr-only">Home</span>
         </Link>
         <div className="flex-1">

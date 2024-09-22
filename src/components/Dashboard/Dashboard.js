@@ -83,7 +83,8 @@ export default function Dashboard() {
           <div className="flex flex-col gap-2">
             <div className="flex h-[60px] items-center px-6">
               <div className="flex items-center gap-2 font-semibold" href="#">
-                <Package2Icon className="h-6 w-6" />
+                {/* <Package2Icon className="h-6 w-6" /> */}
+                <img src="/logom.png" alt="logo" className="h-6 w-6" />
                 <span className="">Infinity Fund LTD</span>
               </div>
             </div>
@@ -156,7 +157,8 @@ export default function Dashboard() {
         <div className="flex flex-col gap-2">
           <div className="flex h-[60px] items-center px-6">
             <div className="flex items-center gap-2 font-semibold" href="#">
-              <Package2Icon className="h-6 w-6" />
+              {/* <Package2Icon className="h-6 w-6" /> */}
+              <img src="/logom.png" alt="logo" className="h-6 w-6" />
               <span className="">Infinity Fund LTD</span>
             </div>
           </div>

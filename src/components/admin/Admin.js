@@ -24,6 +24,7 @@ import { db } from "../../../firbase/clientApp"; // Adjust the import path as ne
 import { collection, getDocs } from "firebase/firestore";
 import NotificationForm from "../AdminSection/NotificationForm/NotificationForm";
 import Settings from "../Settings/Settings";
+import Balance from "../Balance/Balance";
 import Cookies from "js-cookie";
 
 export default function Admin() {
@@ -112,6 +113,7 @@ export default function Admin() {
                 <TabsTrigger value="trade">Trades</TabsTrigger>
                 <TabsTrigger value="transactions">Transactions</TabsTrigger>
                 <TabsTrigger value="notifications">Notifications</TabsTrigger>
+                <TabsTrigger value="balance">Balance</TabsTrigger>
                 {/* <TabsTrigger value="settings">Settings</TabsTrigger> */}
               </TabsList>
               <TabsContent value="overview" className="space-y-4">
@@ -252,6 +254,10 @@ export default function Admin() {
               <TabsContent value="notifications">
                 <NotificationForm userId={selectedTeam.id} />
               </TabsContent>
+              <TabsContent value="balance">
+                <Balance userData={selectedTeam} />
+              </TabsContent>
+
               {/* <TabsContent value="settings">
                 <Settings userData={selectedTeam} />
               </TabsContent> */}

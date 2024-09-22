@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { EnterFullScreenIcon } from "@radix-ui/react-icons";
+import { EnterFullScreenIcon, CopyIcon } from "@radix-ui/react-icons";
 
 function AddMoney({ userData }) {
   const [amount, setAmount] = useState(0);
@@ -129,8 +129,20 @@ function AddMoney({ userData }) {
             <DialogContent className="p-8">
               {/* Your QR code image or component goes here */}
               <img src="/qr/qr.jpg" alt="QR Code" />
-              <p className="mt-4 text-center">
-                Scan this QR code to complete your payment.
+              {/* upi id */}
+              <div className="flex items-center justify-center mt-4 gap-2  ">
+                <p className=" text-center">UPI ID: 8878930243@ybl</p>
+                <CopyIcon
+                  onClick={() => {
+                    navigator.clipboard.writeText("8878930243@ybl");
+                    alert("UPI ID copied to clipboard!");
+                  }}
+                  width={20}
+                  height={20}
+                />
+              </div>
+              <p className="mt-2 text-center">
+                Scan this QR code or use the UPI ID to make a payment
               </p>
             </DialogContent>
           </Dialog>

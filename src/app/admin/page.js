@@ -4,7 +4,7 @@ import Admin from "@/components/admin/Admin";
 
 export const metadata = {
   title: "Dashboard",
-  description: "Example dashboard app built using the components.",
+  description: "User dashboard",
 };
 
 export default function DashboardPage() {

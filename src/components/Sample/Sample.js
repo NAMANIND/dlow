@@ -15,6 +15,11 @@ import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
 function Sample({ userData }) {
   const [tasks, setTasks] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [totalPnl, setTotalPnl] = useState(0);
+  const [tpnl, setTpnl] = useState(0);
+  const [totalBalance, setTotalBalance] = useState(0);
+  const [adjustment, setAdjustment] = useState(0);
+
   useEffect(() => {
     const fetchTasks = async () => {
       const q = query(
@@ -29,7 +34,25 @@ function Sample({ userData }) {
         ...doc.data(),
       }));
       setTasks(tasksData);
+      const tpnl = calculateTotalPnl(tasksData);
+      setTotalPnl(tpnl);
+      const adjustment = userData?.adjustment || 0;
+      setAdjustment(adjustment);
     };
+
+    function calculateTotalPnl(tradeData) {
+      var acc = 0;
+      const op = tradeData.reduce((acc, trade) => {
+        if (trade.pnl) {
+          acc = acc + trade.pnl;
+        }
+        return acc;
+      }, acc); // provide the initial value for the accumulator
+
+      setTpnl(op);
+
+      return op > 0 ? "+" + op : op;
+    }
 
     const fetchTransactions = async () => {
       const q = query(
@@ -44,14 +67,34 @@ function Sample({ userData }) {
         ...doc.data(),
       }));
       setTransactions(transactionsData);
+      const total = calculateTotalBalance(transactionsData);
+      setTotalBalance(total);
 
-      console.log(transactionsData);
+      // console.log(transactionsData);
     };
 
     fetchTransactions();
 
     fetchTasks();
   }, [userData.id]);
+
+  // function to calculate the total balance
+  function calculateTotalBalance(transactionsData) {
+    var acc = 0;
+    return transactionsData.reduce((acc, transaction) => {
+      if (transaction.status === "approved") {
+        if (transaction.type === "Add Money") {
+          return acc + transaction.amount;
+        } else if (transaction.type === "Withdraw Money") {
+          return acc - transaction.amount;
+        }
+        console.log(acc);
+      }
+      return acc; // return the accumulator if the conditions are not met
+    }, acc); // provide the initial value for the accumulator
+  }
+
+  // function to calculate the p/l value of trade
 
   // function to convert timestamp to date
   function timestampToDate(timestamp) {
@@ -81,50 +124,57 @@ function Sample({ userData }) {
           Here&apos;s what&apos;s happening with your account today
         </p>
       </div>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {" "}
+        <Card>
+          <CardHeader className="flex flex-row items-c</Card>enter justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Total Balance</CardTitle>
+            <CreditCardIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">₹{totalBalance}</div>
+            {/* <p className="text-xs text-gray-500 dark:text-gray-400">
+              +20.1% from last month
+            </p> */}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">
+              Available Balance
+            </CardTitle>
+            <BarChartIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {totalBalance + adjustment}
+            </div>
+            {/* <p className="text-xs text-gray-500 dark:text-gray-400">
+              +19% from last month
+            </p> */}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">
+              Total Profit/Loss
+            </CardTitle>
+            <ActivityIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalPnl}</div>
+            {/* <p className="text-xs text-gray-500 dark:text-gray-400">
+              +180.1% from last month
+            </p> */}
+          </CardContent>
+        </Card>
+      </div>
+
       <div className="my-4">
         <h1 className="text-xl font-semibold">Recent Trades</h1>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {/* <Card>
-          <CardHeader className="flex flex-row items-c</Card>enter justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Balance</CardTitle>
-            <DollarSignIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              +20.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
-              Pending Deposits
-            </CardTitle>
-            <UsersIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+$2,350</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              +180.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
-              Pending Withdrawals
-            </CardTitle>
-            <CreditCardIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">-$12,234</div>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              +19% from last month
-            </p>
-          </CardContent>
-        </Card> */}
         {tasks.slice(0, 3).map((task) => (
           <Card key={task.tradeId}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -142,6 +192,28 @@ function Sample({ userData }) {
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 {timestampToDate(task.timestamp)}
               </p>
+              {/* add a like tag to divide */}
+
+              <hr />
+              <div className="flex items-center gap-2">
+                {task.updatedtimestamp ? (
+                  <div className="text-sm font-medium">
+                    P/L: {task.pnl > 0 ? "+" + task.pnl : task.pnl}
+                  </div>
+                ) : (
+                  <div className="text-sm font-medium">P/L: 0</div>
+                )}
+                <div className="text-sm font-medium  text-gray-500">|</div>
+                {task.updatedtimestamp ? (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Updated At: {timestampToDate(task.updatedtimestamp)}
+                  </p>
+                ) : (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Updated At: Not Updated Yet
+                  </p>
+                )}
+              </div>
             </CardContent>
           </Card>
         ))}

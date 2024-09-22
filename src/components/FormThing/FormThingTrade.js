@@ -9,8 +9,9 @@ import { UserNav } from "@/components/Table/user-nav";
 import Image from "next/image";
 
 import { columns } from "@/components/Table/columnsTrade";
+import { columnsAdmin } from "@/components/Table/columnAdminTrade";
 
-function FormThingTrade({ userData }) {
+function FormThingTrade({ userData, admin }) {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
@@ -63,10 +64,22 @@ function FormThingTrade({ userData }) {
           </div> */}
         </div>
         <div className="md:hidden flex overflow-hidden w-full max-w-[85vw] h-full ">
-          <DataTable data={tasks} columns={columns} />
+          {admin ? (
+            <div className="w-full">
+              <DataTable data={tasks} columns={columnsAdmin} />
+            </div>
+          ) : (
+            <div className="w-full">
+              <DataTable data={tasks} columns={columns} />
+            </div>
+          )}
         </div>
         <div className="md:block hidden">
-          <DataTable data={tasks} columns={columns} />
+          {admin ? (
+            <DataTable data={tasks} columns={columnsAdmin} />
+          ) : (
+            <DataTable data={tasks} columns={columns} />
+          )}
         </div>
       </div>
     </>

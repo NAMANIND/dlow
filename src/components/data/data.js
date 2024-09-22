@@ -46,12 +46,12 @@ export const statuses = [
 
 export const statuses_trade = [
   {
-    value: "sell",
+    value: "Sell",
     label: "Sell",
     icon: SymbolIcon,
   },
   {
-    value: "buy",
+    value: "Buy",
     label: "Buy",
     icon: BarChartIcon,
   },

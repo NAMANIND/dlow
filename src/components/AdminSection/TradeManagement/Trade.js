@@ -62,6 +62,18 @@ export default function Trade({ userData }) {
       return;
     }
 
+    // make sure all fields are filled
+    if (
+      !newTrade.symbol ||
+      !newTrade.type ||
+      !newTrade.quantity ||
+      !newTrade.price
+    ) {
+      alert("Please fill all fields!"); // custom alert
+
+      return;
+    }
+
     const newTradeData = {
       ...newTrade,
       userId,
@@ -184,7 +196,7 @@ export default function Trade({ userData }) {
         </Card>
       </div>
       <div className="col-span-2 md:col-span-2">
-        <TradeTable userData={userData} />
+        <TradeTable userData={userData} admin={true} />
       </div>
     </div>
   );
