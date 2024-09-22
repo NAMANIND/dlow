@@ -83,7 +83,7 @@ function getCurrentValue(price, pnl) {
   }
   return price + pnlValue;
 }
-const [isOpen, setIsOpen] = useState(false);
+
 export const columnsAdmin = [
   {
     id: "select",
@@ -188,6 +188,7 @@ export const columnsAdmin = [
     id: "action",
     header: "Action",
     cell: ({ row }) => {
+      const [isOpen, setIsOpen] = useState(false);
       const closeDialog = () => {
         setIsOpen(false);
       };
