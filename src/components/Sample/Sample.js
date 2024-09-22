@@ -148,7 +148,7 @@ function Sample({ userData }) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {totalBalance + adjustment}
+              ₹{totalBalance + adjustment}
             </div>
             {/* <p className="text-xs text-gray-500 dark:text-gray-400">
               +19% from last month
