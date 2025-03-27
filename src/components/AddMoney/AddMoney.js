@@ -131,10 +131,10 @@ function AddMoney({ userData }) {
               <img src="/qr/qr.jpg" alt="QR Code" />
               {/* upi id */}
               <div className="flex items-center justify-center mt-4 gap-2  ">
-                <p className=" text-center">UPI ID: 8878930243@ybl</p>
+                <p className=" text-center">UPI ID: infinityfundlimited@axl</p>
                 <CopyIcon
                   onClick={() => {
-                    navigator.clipboard.writeText("8878930243@ybl");
+                    navigator.clipboard.writeText("infinityfundlimited@axl");
                     alert("UPI ID copied to clipboard!");
                   }}
                   width={20}
